@@ -1,35 +1,57 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+} from "firebase/auth";
+import { auth } from "./lib/firebase";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    // ① リスナー登録して、変更を監視
+    const unsub = onAuthStateChanged(auth, (user) => {
+      setUser(user);// ② 認証状態が変わったら state を更新
+    });
+    // ③ クリーンアップ：コンポーネントが消えたらリスナー解除
+    return () => unsub();
+  }, []);
+
+  const register = () => {
+    createUserWithEmailAndPassword(auth, email, password).catch(console.error);
+  };
+
+  const login = () => {
+    signInWithEmailAndPassword(auth, email, password).catch(console.error);
+  };
+
+  const logout = () => {
+    signOut(auth);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div style={{ padding: "2rem" }}>
+      {user ? (
+        <>
+          <p>Welcome, {user.email}</p>
+          <button onClick={logout}>Logout</button>
+        </>
+      ) : (
+        <>
+          <input placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
+          <input placeholder="Password" type="password" onChange={(e) => setPassword(e.target.value)} />
+          <div style={{ marginTop: "1rem" }}>
+            <button onClick={register}>Register</button>
+            <button onClick={login}>Login</button>
+          </div>
+        </>
+      )}
+    </div>
+  );
 }
 
-export default App
+export default App;
