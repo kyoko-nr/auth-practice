@@ -1,7 +1,5 @@
 import * as admin from 'firebase-admin';
 
-const serviceAccount = JSON.parse(process.env.SERVICE_ACCOUNT_KEY_JSON || '{}');
-
 // 初期化
 admin.initializeApp();
 
