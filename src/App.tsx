@@ -6,6 +6,7 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 import { auth } from "./lib/firebase";
+import { apiFetch } from "./lib/api";
 
 function App() {
   const [email, setEmail] = useState("");
@@ -33,6 +34,11 @@ function App() {
     signOut(auth);
   };
 
+  const getHello = async () => {
+    const {data} = await apiFetch<{data: string}>("/hello")
+    console.log("message:", data)
+  }
+
   return (
     <div style={{ padding: "2rem" }}>
       {user ? (
@@ -50,6 +56,7 @@ function App() {
           </div>
         </>
       )}
+      <button onClick={getHello}>Get Hello</button>
     </div>
   );
 }
