@@ -6,6 +6,5 @@ export async function getIdToken(): Promise<string> {
   if (!user) {
     throw new Error('User is not authenticated');
   }
-  // forceRefresh=false にするとキャッシュされたトークンを返す
-  return await user.getIdToken(/* forceRefresh */ false);
+  return await user.getIdToken(true);
 }
