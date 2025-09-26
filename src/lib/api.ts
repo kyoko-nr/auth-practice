@@ -1,7 +1,7 @@
 // src/lib/api.ts
 import { getIdToken } from './authHelper';
 
-const API_BASE = 'http://localhost:4000';
+const API_BASE = 'http://localhost:3000';
 
 type FetchOptions = Omit<RequestInit, 'headers' | 'body'> & {
   body?: any;
